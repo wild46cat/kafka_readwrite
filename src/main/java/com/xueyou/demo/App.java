@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Hello world!
@@ -15,12 +18,12 @@ public class App {
     private static Logger logger = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        conntectionKafka();
-
+        logger.info("begin kafka producer");
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(conntectionKafkaProducer(), 0, 2, TimeUnit.SECONDS);
     }
 
-    public static void conntectionKafka() {
+    public static Runnable conntectionKafkaProducer() {
         Properties props = new Properties();
         props.put("bootstrap.servers", "192.168.0.84:9092,192.168.0.85:9092,192.168.0.86:9092");
 //        props.put("bootstrap.servers", "192.168.0.88:9092");
@@ -33,12 +36,17 @@ public class App {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        Producer<String, String> producer = new KafkaProducer<>(props);
-        producer.send(new ProducerRecord<String, String>("test", "^_^ ok~~"));
-        logger.info("producer send ok !!!");
-        producer.flush();
-        producer.close();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Producer<String, String> producer = new KafkaProducer<>(props);
+                producer.send(new ProducerRecord<String, String>("test", "^_^ ok~~"));
+                logger.info("producer send ok !!!");
+                producer.flush();
+                producer.close();
+            }
+        };
+        return runnable;
     }
-
 
 }

@@ -19,10 +19,9 @@ public class Consumer {
     private static Logger logger = LoggerFactory.getLogger(Consumer.class);
 
     public static void main(String[] args) {
-        System.out.println("begin consumer");
+        System.out.println("begin kafka consumer");
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(connectionKafka(), 0, 2, TimeUnit.SECONDS);
-        System.out.println("finish consumer");
+        service.scheduleAtFixedRate(connectionKafka(), 4, 2, TimeUnit.SECONDS);
     }
 
     public static Runnable connectionKafka() {
@@ -44,13 +43,20 @@ public class Consumer {
             @Override
             public void run() {
                 logger.info("running ......");
-                ConsumerRecords<String, String> records = consumer.poll(100);
+                ConsumerRecords<String, String> records = consumer.poll(0);
+                if (!records.isEmpty()) {
+                    Constants.checktrue();
+                } else {
+                    Constants.checkfalse();
+                }
+                logger.info(String.valueOf(Constants.flag));
                 for (ConsumerRecord<String, String> record : records) {
                     System.out.printf("offset = %d, key = %s, value = %s\t\n", record.offset(), record.key(), record.value());
                 }
             }
         };
         return runnable;
-
     }
+
+
 }
