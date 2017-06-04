@@ -3,11 +3,12 @@ package com.xueyou.demo;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.Executors;
-import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +16,8 @@ import java.util.concurrent.TimeUnit;
  * Created by wuxueyou on 2017/6/4.
  */
 public class Consumer {
+    private static Logger logger = LoggerFactory.getLogger(Consumer.class);
+
     public static void main(String[] args) {
         System.out.println("begin consumer");
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
@@ -40,7 +43,7 @@ public class Consumer {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-
+                logger.info("running ......");
                 ConsumerRecords<String, String> records = consumer.poll(100);
                 for (ConsumerRecord<String, String> record : records) {
                     System.out.printf("offset = %d, key = %s, value = %s\t\n", record.offset(), record.key(), record.value());
