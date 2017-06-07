@@ -18,8 +18,9 @@ public class Monitor {
     private static Logger logger = LoggerFactory.getLogger(Monitor.class);
 
     public static void main(String[] args) {
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(monitorFlag(), 0, 3, TimeUnit.SECONDS);
+        System.out.println(Constants.flag);
+//        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+//        service.scheduleAtFixedRate(monitorFlag(), 0, 3, TimeUnit.SECONDS);
     }
 
     public static Runnable monitorFlag() {
