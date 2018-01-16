@@ -17,18 +17,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class Consumer {
     private static Logger logger = LoggerFactory.getLogger(Consumer.class);
+    public static final String BOOTSTRAP_SERVER = "192.168.0.66:9092";
+    public static final String TOPICNAME="test001";
 
     public static void main(String[] args) {
         System.out.println("begin kafka consumer");
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(connectionKafka(), 4, 2, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(connectionKafka(), 0, 2, TimeUnit.SECONDS);
     }
 
     public static Runnable connectionKafka() {
 
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.0.84:9092,192.168.0.85:9092,192.168.0.86:9092");
-//        props.put("bootstrap.servers", "192.168.0.88:9092");
+        props.put("bootstrap.servers", BOOTSTRAP_SERVER);
         props.put("group.id", "testConsumer");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
@@ -37,7 +38,7 @@ public class Consumer {
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
         //要消费的topic名称
-        consumer.subscribe(Arrays.asList("test"));
+        consumer.subscribe(Arrays.asList(TOPICNAME));
 
         Runnable runnable = new Runnable() {
             @Override

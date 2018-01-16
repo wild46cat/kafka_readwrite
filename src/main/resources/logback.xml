@@ -8,6 +8,9 @@
         </encoder>
     </appender>
 
+    <!--通过下面的日志过滤语句对kafka的日志进行过滤-->
+    <logger name="org.apache.kafka.clients" level="off"></logger>
+
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
